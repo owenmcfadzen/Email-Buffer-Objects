@@ -1,24 +1,28 @@
-#define DEVICE_ID 'B'
+#define DEVICE_ID 'A'
 #define FORCE_SENSOR_PIN A0 
-#define LED_DATA_PIN 2
-#define LED_LATCH_PIN 3
-#define LED_CLOCK_PIN 4
+
+/*LED Libraries*/
+#include "Tlc5940.h"
+#include "tlc_fades.h"
+TLC_CHANNEL_TYPE channel;
+
 
 void setup(){
   Serial.begin(9600);
-  pinMode(LED_DATA_PIN, OUTPUT);
-  pinMode(LED_LATCH_PIN, OUTPUT);
-  pinMode(LED_CLOCK_PIN, OUTPUT);
+  /*LED Library*/
+  Tlc.init();
 }
 
 void loop(){
   update_sensor();
+  tlc_updateFades(millis());
 }
 
 /* Events */
 void serial_event(byte serial_value) {
   /* Assume that serial_value is an int and turn on LEDs */
-  set_multiple_leds(serial_value);
+//  set_multiple_leds(serial_value);
+  setLed(serial_value);
 }
 
 void lift_event() {
