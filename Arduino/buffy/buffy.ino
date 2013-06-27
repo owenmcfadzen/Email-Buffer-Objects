@@ -4,15 +4,6 @@
 #define LED_LATCH_PIN 3
 #define LED_CLOCK_PIN 4
 
-#define SERIAL_STATE_READY 1
-#define SERIAL_STATE_READING 2
-
-unsigned long last_led_time = 0;
-int serial_state = SERIAL_STATE_READY;
-byte aValue = 0;
-boolean getTheNextByte = false;
-boolean newValue = false;
-
 void setup(){
   Serial.begin(9600);
   pinMode(LED_DATA_PIN, OUTPUT);
@@ -21,39 +12,28 @@ void setup(){
 }
 
 void loop(){
-  updateSensor();
-  if(newValue){
-    setNewLed(aValue);
-    newValue = false;
-  }
+  update_sensor();
 }
 
-void serialEvent() {
-  while(Serial.available()) {
-    byte inByte = Serial.read();
-    if(getTheNextByte){
-      aValue = inByte;
-      newValue = true;
-      getTheNextByte = false;
-    }
-
-    if(inByte == DEVICE_ID){
-      getTheNextByte = true;
-    }
-  } 
+/* Events */
+void serial_event(byte serial_value) {
+  /* Assume that serial_value is an int and turn on LEDs */
+  set_multiple_leds(serial_value);
 }
 
-/*Events*/
-void liftEvent(){
+void lift_event() {
   Serial.println("Lifted");
 }
-void restEvent(){
+
+void rest_event() {
   Serial.println("Resting");
 }
-void shortPressEvent(){
+
+void short_press_event() {
   Serial.println("Short Press");
 }
-void longPressEvent(){
+ 
+void long_press_event() {
   Serial.println("Long Press");
 }
 

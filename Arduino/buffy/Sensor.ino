@@ -13,25 +13,26 @@ int force_value = 0;
 int force_state = 0;
 unsigned long force_press_start = 0;
 
-void updateSensor() {
+void update_sensor() {
   force_value = analogRead(FORCE_SENSOR_PIN);
   //Serial.println(force_value);
+  
   if(force_value < force_on_rest + 50
     && force_value > force_on_rest - 50 
     && force_state != FORCE_STATE_RESTING){
     /*We must be resting */
     if(force_state == FORCE_STATE_PRESSING){ 
-      shortPressEvent();
+      short_press_event();
     }
     force_state = FORCE_STATE_RESTING;
-    restEvent();
+    rest_event();
   }
 
   else if (force_value <= force_on_lift 
     && force_state != FORCE_STATE_LIFTING ){
     /*We must be lifted*/
     force_state = FORCE_STATE_LIFTING;
-    liftEvent();
+    lift_event();
   }
 
   else if (force_value > force_on_press 
@@ -47,9 +48,8 @@ void updateSensor() {
     if (millis() - force_press_start > long_press_time){
       /*We must have pressed for a long time*/
       force_state = FORCE_STATE_LONG_PRESS;
-      longPressEvent();
+      long_press_event();
     }
-
   }
 }
 
