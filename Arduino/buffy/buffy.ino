@@ -1,4 +1,4 @@
-#define DEVICE_ID 'A'
+#define DEVICE_ID 'B'
 #define FORCE_SENSOR_PIN A0 
 #define LED_DATA_PIN 2
 #define LED_LATCH_PIN 3
