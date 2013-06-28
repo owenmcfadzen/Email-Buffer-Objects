@@ -51,6 +51,10 @@ void rest_event() {
 
 void short_press_event() {
   Serial.println("Short Press");
+  /* Listen for specific char */
+    digitalWrite(MOTOR_PIN, HIGH);
+    delay(100);
+    digitalWrite(MOTOR_PIN, LOW);
 }
 
 void long_press_event() {
