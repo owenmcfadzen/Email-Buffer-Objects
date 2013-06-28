@@ -31,6 +31,7 @@ void setLed(int n){
   
   n = constrain(n, 0, 15);
   int d = 0;
+  if(oldLEDVal > n){
     //Fade out
     }
   }
