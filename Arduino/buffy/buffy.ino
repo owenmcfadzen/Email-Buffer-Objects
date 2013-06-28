@@ -11,11 +11,11 @@
 
 void setup(){
   Serial.begin(9600);
-  
+
   /* Initialise the solenoid pins */
   pinMode(MOTOR_PIN, OUTPUT);
   digitalWrite(MOTOR_PIN, LOW);
-  
+
   /* LED Library */
   Tlc.init();
 }
@@ -27,8 +27,16 @@ void loop(){
 
 /* Events */
 void serial_event(byte serial_value) {
-  /* Assume that serial_value is an int and turn on LEDs */
-  setLed(serial_value);
+  if (serial_value == 'K') {
+    /* Listen for specific char */
+    digitalWrite(MOTOR_PIN, HIGH);
+    delay(100);
+    digitalWrite(MOTOR_PIN, LOW);
+  }
+  else {
+    /* Assume that serial_value is an int and turn on LEDs */
+    setLed(serial_value);
+  }
 }
 
 void lift_event() {
@@ -42,7 +50,8 @@ void rest_event() {
 void short_press_event() {
   Serial.println("Short Press");
 }
- 
+
 void long_press_event() {
   Serial.println("Long Press");
 }
+
