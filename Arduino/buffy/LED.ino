@@ -7,6 +7,7 @@ int led_low = 500;
 int led_off = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void set_multiple_leds(int n){
   Serial.print("turn on ");
   Serial.print(n);
@@ -17,6 +18,8 @@ void set_multiple_leds(int n){
   shiftOut(LED_DATA_PIN, LED_CLOCK_PIN, MSBFIRST, led_sequence[n]);
   digitalWrite(LED_LATCH_PIN, HIGH);
 =======
+=======
+>>>>>>> c163f1b17c6448722bdcfc82a11472e133446aa2
 void setLed(int n){
   
   n = constrain(n, 0, 15);
@@ -39,6 +42,9 @@ void setLed(int n){
     }
   }
   oldLEDVal = n;
+<<<<<<< HEAD
+>>>>>>> c163f1b17c6448722bdcfc82a11472e133446aa2
+=======
 >>>>>>> c163f1b17c6448722bdcfc82a11472e133446aa2
 }
 
