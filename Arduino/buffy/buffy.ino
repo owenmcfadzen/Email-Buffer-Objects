@@ -22,6 +22,7 @@ void setup(){
 
 void loop(){
   update_sensor();
+  Tlc.update();
   tlc_updateFades(millis());
 }
 
@@ -35,7 +36,8 @@ void serial_event(byte serial_value) {
   }
   else {
     /* Assume that serial_value is an int and turn on LEDs */
-    setLed(serial_value);
+    //    setLed(serial_value);
+    set_lukes_led_test(serial_value);
   }
 }
 
@@ -54,4 +56,5 @@ void short_press_event() {
 void long_press_event() {
   Serial.println("Long Press");
 }
+
 
