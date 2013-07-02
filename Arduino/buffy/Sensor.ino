@@ -1,56 +1,71 @@
-#define FORCE_STATE_RESTING 1
-#define FORCE_STATE_LIFTING 2
-#define FORCE_STATE_PRESSING 3
-#define FORCE_STATE_LONG_PRESS 4
+#define PB_STATE_READY 1
+#define PB_STATE_PRESSING 2
+#define PB_STATE_LONG_PRESS 3
 
-/* Define the force thresholds to measure interactions */
-int force_on_rest = 250;
-int force_on_lift = 0;
-int force_on_press = 700;
-int long_press_time = 1000;
+#define REED_STATE_READY 1
+#define REED_STATE_CONNECTED 2
+#define REED_STATE_DISCONNECTING 3
 
-int force_value = 0;
-int force_state = 0;
-unsigned long force_press_start = 0;
+int pb_state = PB_STATE_READY;
+int pb_sensor_value = 0;
+unsigned long pb_start_time = 0;
+
+boolean reed_state = REED_STATE_READY;
+boolean reed_sensor_value = false;
+unsigned long reed_detach_time = 0;
+
+void sensor_init() {
+  // we don't need to do anything
+}
 
 void update_sensor() {
-  force_value = analogRead(FORCE_SENSOR_PIN);
-  //Serial.println(force_value);
-  
-  if(force_value < force_on_rest + 50
-    && force_value > force_on_rest - 50 
-    && force_state != FORCE_STATE_RESTING){
-    /*We must be resting */
-    if(force_state == FORCE_STATE_PRESSING){ 
+  pb_sensor_value = digitalRead(PUSH_BUTTON_PIN);
+
+  if (pb_sensor_value == HIGH && pb_state == PB_STATE_READY) {
+    // we are now pressing the button
+    pb_state = PB_STATE_PRESSING;
+    pb_start_time = millis();
+  }
+  else if (pb_sensor_value == LOW && pb_state != PB_STATE_READY) {
+    // we have now released the button
+    if (pb_state == PB_STATE_PRESSING) {
       short_press_event();
     }
-    force_state = FORCE_STATE_RESTING;
+    pb_state = PB_STATE_READY;
     rest_event();
   }
 
-  else if (force_value <= force_on_lift 
-    && force_state != FORCE_STATE_LIFTING ){
-    /*We must be lifted*/
-    force_state = FORCE_STATE_LIFTING;
-    lift_event();
-  }
-
-  else if (force_value > force_on_press 
-    && force_state != FORCE_STATE_PRESSING
-    && force_state != FORCE_STATE_LONG_PRESS){
-    /*We must be pressing*/
-    force_state = FORCE_STATE_PRESSING;
-    force_press_start = millis();
-  }
-
-  /*Count how long we have been pressing*/
-  if (force_state == FORCE_STATE_PRESSING ){
-    if (millis() - force_press_start > long_press_time){
-      /*We must have pressed for a long time*/
-      force_state = FORCE_STATE_LONG_PRESS;
+  // Count how long we've been pressing the button down
+  if (pb_state == PB_STATE_PRESSING) {
+    if (millis() - pb_start_time > 1000){
+      // We must have pressed for a long time
+      pb_state = PB_STATE_LONG_PRESS;
       long_press_event();
     }
   }
-}
 
+  // get reed sensor
+  reed_sensor_value = digitalRead(REED_SENSOR_PIN);
+  
+  if (reed_sensor_value == HIGH && reed_state != REED_STATE_CONNECTED) {
+    // We must be touching
+    if (reed_state == REED_STATE_READY) {
+      neighbor_connect_event();
+    }
+    reed_state = REED_STATE_CONNECTED;
+  }
+  else if (reed_sensor_value == LOW && reed_state == REED_STATE_CONNECTED) {
+    // We must have disconnected
+    reed_state = REED_STATE_DISCONNECTING;
+    reed_detach_time = millis();
+  }
+  
+  if (reed_state == REED_STATE_DISCONNECTING) {
+    if (millis() - reed_detach_time > 2000) {
+      // We must have detached for a long time
+      reed_state = REED_STATE_READY;
+      neighbor_detach_event();
+    }
+  }
+}
 

@@ -1,6 +1,6 @@
 void motor_init() {
   pinMode(MOTOR_PIN, OUTPUT);
-  digitalWrite(MOTOR_PIN, HIGH);
+  digitalWrite(MOTOR_PIN, LOW);
 }
 
 void motor_tap() {
