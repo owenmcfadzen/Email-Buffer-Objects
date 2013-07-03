@@ -43,6 +43,8 @@ void serial_event(byte serial_value) {
   }
   else {
     // Assume that serial_value is an int and turn on LEDs
+    mails = ((int)serial_value);  //change incoming byte into int
+
     //    setLed(serial_value);
     //    set_lukes_led_test(serial_value);
   }
