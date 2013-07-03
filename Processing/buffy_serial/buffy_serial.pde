@@ -19,47 +19,12 @@ void setup() {
 }
 
 void draw() {
-
+  
+    while( port.available()>0) { // this is the part to print out what arduino recived
+      print((char) port.read()); // this too 
+    }
   background(bgcolor);
 
-  // compare each mailbox and set a new data flag
-  if (newInbox != inbox) {
-    // this mailbox has a new email
-    println("new inbox");
-    port.write('A');
-    port.write('K');
-    port.write('A');
-    port.write(inbox);
-    bgcolor = 255;
-    inbox = newInbox;
-  } else if (newSpecial1 != special1) {
-    // this mailbox has a new email
-    println("new Special#1");
-    port.write('B');
-    port.write('K');
-    port.write('B');
-    port.write(special1);
-    bgcolor = 255;
-    special1 = newSpecial1;
-  } else if (newSpecial2 != special2) {
-    // this mailbox has a new email
-    println("new Special#2");
-    port.write('C');
-    port.write('K');
-    port.write('C');
-    port.write(special2);
-    bgcolor = 255;
-    special2 = newSpecial2;
-  } else if (newSpecial3 != special3) {
-    // this mailbox has a new email
-    println("new Special#3");
-    port.write('D');
-    port.write('K');
-    port.write('D');
-    port.write(special3);
-    bgcolor = 255;
-    special3 = newSpecial3;
-  }
 
   // check mailboxes again
   if (!checking_email) {
@@ -82,6 +47,56 @@ void draw() {
   if (bgcolor < 0) {
     bgcolor = 0;
   }
+  
+    // compare each mailbox and set a new data flag
+  if (newInbox != inbox) {
+    // this mailbox has a new email
+    println("new inbox");
+    port.write('A');
+    port.write('z');
+    port.write('A');
+    port.write(inbox);
+    port.write("A");
+    port.write('x');
+    bgcolor = 255;
+    inbox = newInbox;
+  } else if (newSpecial1 != special1) {
+    // this mailbox has a new email
+    special1 = newSpecial1;                  // important to update special1 in  begining of code
+    println("new Special#1");
+    port.write('B');
+    port.write('z');
+    port.write('B');
+    println("i'm sending: " + special1);
+    port.write(special1);
+    
+  
+    bgcolor = 255;
+  } else if (newSpecial2 != special2) {
+    // this mailbox has a new email
+    println("new Special#2");
+    port.write('C');
+    port.write('z');
+    port.write('C');
+    port.write(special2);
+    port.write("C");
+    port.write('x');
+    bgcolor = 255;
+    special2 = newSpecial2;
+  } else if (newSpecial3 != special3) {
+    // this mailbox has a new email
+    println("new Special#3");
+    port.write('D');
+    port.write('z');
+    port.write('D');
+    port.write(special3);
+    port.write("D");
+    port.write('x');
+    bgcolor = 255;
+    special3 = newSpecial3;
+  }
+
+
 }
 
 void check_mailboxes() {
