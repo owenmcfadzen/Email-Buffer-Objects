@@ -50,16 +50,14 @@ void draw() {
   
     // compare each mailbox and set a new data flag
   if (newInbox != inbox) {
+    inbox = newInbox;
     // this mailbox has a new email
     println("new inbox");
     port.write('A');
     port.write('z');
     port.write('A');
     port.write(inbox);
-    port.write("A");
-    port.write('x');
     bgcolor = 255;
-    inbox = newInbox;
   } else if (newSpecial1 != special1) {
     // this mailbox has a new email
     special1 = newSpecial1;                  // important to update special1 in  begining of code
@@ -67,33 +65,26 @@ void draw() {
     port.write('B');
     port.write('z');
     port.write('B');
-    println("i'm sending: " + special1);
     port.write(special1);
-    
-  
     bgcolor = 255;
   } else if (newSpecial2 != special2) {
     // this mailbox has a new email
+    special2 = newSpecial2;
     println("new Special#2");
     port.write('C');
     port.write('z');
     port.write('C');
     port.write(special2);
-    port.write("C");
-    port.write('x');
     bgcolor = 255;
-    special2 = newSpecial2;
   } else if (newSpecial3 != special3) {
+    special3 = newSpecial3;
     // this mailbox has a new email
     println("new Special#3");
     port.write('D');
     port.write('z');
     port.write('D');
     port.write(special3);
-    port.write("D");
-    port.write('x');
     bgcolor = 255;
-    special3 = newSpecial3;
   }
 
 
