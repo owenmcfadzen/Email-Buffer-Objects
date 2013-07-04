@@ -1,10 +1,5 @@
-#define DEVICE_ID_A 'ü' // DEVICE A COMMAND
-#define DEVICE_ID_B 'ý' // DEVICE B COMMAND
-#define DEVICE_ID_C 'þ' // DEVICE C COMMAND
-#define TRIGGER_SOLENOID 'ÿ' // TRIGGER SOLENOID COMMAND
-
-// YOU MUST SET EACH UNIQUE DEVICE ID HERE
-#define DEVICE_ID DEVICE_ID_C
+#define DEVICE_ID 'B' // UNIQUE DEVICE ID
+#define TRIGGER_SOLENOID 'K' // TRIGGER SOLENOID COMMAND
 
 #define LED_DRIVER 3
 #define PUSH_BUTTON_PIN 5
@@ -50,11 +45,11 @@ void serial_event(byte serial_value) {
     // cast incoming byte to int
     // we expect this number to be between 0 - 254
     int new_mailbox_total = ((int) serial_value);
-    
+
     if (new_mailbox_total != mailbox_total) {
       led_pulse_to(new_mailbox_total);
     }
-    
+
     mailbox_total = new_mailbox_total;
   }
 }
@@ -99,6 +94,9 @@ void neighbor_detach_event() {
 
   motor_tap();
 }
+
+
+
 
 
 

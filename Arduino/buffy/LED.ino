@@ -38,7 +38,7 @@ void led_pulse_to(int n) {
   led_state = LED_STATE_PULSING;
 }
 
-void slow_fade() {
+void led_slow_fade() {
   if (millis() - last_led_timout > 50) {
     // change the brightness for next time through the loop
     brightness += fade_amount;
