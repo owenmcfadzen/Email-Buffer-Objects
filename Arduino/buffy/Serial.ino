@@ -12,6 +12,7 @@ void serialEvent() {
     if(serial_process_next_byte){
       serial_event(new_byte);
       serial_process_next_byte = false;
+//      Serial.flush();
     }
 
     if(new_byte == DEVICE_ID){

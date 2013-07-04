@@ -3,7 +3,8 @@
 #define LED_OFF 0
 
 #define LED_STATE_READY 0
-#define LED_STATE_PULSING 1
+#define LED_STATE_PULSING_UP 1
+#define LED_STATE_RESTING 2
 
 int led_state = LED_STATE_READY;
 
@@ -20,11 +21,15 @@ void led_setup() {
 
 void led_loop() {
 
-  if (led_state == LED_STATE_PULSING) {
+  if (led_state == LED_STATE_PULSING_UP) {
     // we're going UP
-    
+    brightness += 10;
     led_animation_counter++;
-    
+
+    if (brightness >= LED_HIGH) {
+      led_state == LED_STATE_RESTING;
+    }
+
     for (int i = 0; i <= 8; i++) {
       Tlc.set(i, brightness);
     }
@@ -34,8 +39,13 @@ void led_loop() {
 }
 
 void led_pulse_to(int n) {
+  Serial.print("DEVICE '");
+  Serial.print(DEVICE_ID);
+  Serial.print("': led_pulse_to ");
+  Serial.println(n);
+
   led_animation_counter = 0;
-  led_state = LED_STATE_PULSING;
+  led_state = LED_STATE_PULSING_UP;
 }
 
 void led_slow_fade() {
@@ -55,5 +65,6 @@ void led_slow_fade() {
     Tlc.set(i, brightness);
   }
 }
+
 
 

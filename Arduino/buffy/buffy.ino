@@ -37,20 +37,46 @@ void loop(){
 // Events
 void serial_event(byte serial_value) {
 
+  // Listen for specific char
   if (serial_value == TRIGGER_SOLENOID) {
-    // Listen for specific char
     motor_tap();
   }
+  else if (serial_value == '0') {
+    led_pulse_to(0);
+  }
+  else if (serial_value == '1') {
+    led_pulse_to(1);
+  }
+  else if (serial_value == '2') {
+    led_pulse_to(2);
+  }
+  else if (serial_value == '3') {
+    led_pulse_to(3);
+  }
+  else if (serial_value == '4') {
+    led_pulse_to(4);
+  }
+  else if (serial_value == '5') {
+    led_pulse_to(5);
+  }
+  else if (serial_value == '6') {
+    led_pulse_to(6);
+  }
+  else if (serial_value == '7') {
+    led_pulse_to(7);
+  }
+  else if (serial_value == '8') {
+    led_pulse_to(8);
+  }
+  else if (serial_value == '9') {
+    led_pulse_to(9);
+  }  
   else {
-    // cast incoming byte to int
-    // we expect this number to be between 0 - 254
-    int new_mailbox_total = ((int) serial_value);
-
-    if (new_mailbox_total != mailbox_total) {
-      led_pulse_to(new_mailbox_total);
-    }
-
-    mailbox_total = new_mailbox_total;
+    // For debugging unusual commands from server
+    Serial.print("DEVICE '");
+    Serial.print(DEVICE_ID);
+    Serial.print("': Unknown command ");
+    Serial.println(serial_value);
   }
 }
 
@@ -94,6 +120,7 @@ void neighbor_detach_event() {
 
   motor_tap();
 }
+
 
 
 
