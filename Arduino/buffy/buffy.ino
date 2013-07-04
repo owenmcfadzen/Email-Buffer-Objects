@@ -1,4 +1,10 @@
-#define DEVICE_ID 'A'
+#define DEVICE_ID_A 'ü' // DEVICE A COMMAND
+#define DEVICE_ID_B 'ý' // DEVICE B COMMAND
+#define DEVICE_ID_C 'þ' // DEVICE C COMMAND
+#define TRIGGER_SOLENOID 'ÿ' // TRIGGER SOLENOID COMMAND
+
+// YOU MUST SET EACH UNIQUE DEVICE ID HERE
+#define DEVICE_ID DEVICE_ID_C
 
 #define LED_DRIVER 3
 #define PUSH_BUTTON_PIN 5
@@ -12,41 +18,44 @@
 // LED Libraries
 #include "Tlc5940.h";
 
+// Store the mailbox total for this device
+int mailbox_total = 0;
+
 void setup(){
   Serial.begin(9600);
 
   // Initialise the sensors (push button & reed)
-  sensor_init();
+  sensor_setup();
 
   // Initialise the solenoid
-  motor_init();
+  motor_setup();
 
   // Initialise the LED Library
-  led_init();
+  led_setup();
 }
 
 void loop(){
-  update_led();
-  update_sensor();
+  led_loop();
+  sensor_loop();
 }
 
 // Events
 void serial_event(byte serial_value) {
 
-  Serial.print("DEVICE '");
-  Serial.print(DEVICE_ID);
-  Serial.println("' received a command via XBee");
-
-  if (serial_value == 'K') {
+  if (serial_value == TRIGGER_SOLENOID) {
     // Listen for specific char
     motor_tap();
   }
   else {
-    // Assume that serial_value is an int and turn on LEDs
-    mails = ((int)serial_value);  //change incoming byte into int
-
-    //    setLed(serial_value);
-    //    set_lukes_led_test(serial_value);
+    // cast incoming byte to int
+    // we expect this number to be between 0 - 254
+    int new_mailbox_total = ((int) serial_value);
+    
+    if (new_mailbox_total != mailbox_total) {
+      led_pulse_to(new_mailbox_total);
+    }
+    
+    mailbox_total = new_mailbox_total;
   }
 }
 
@@ -56,11 +65,17 @@ void rest_event() {
   Serial.println("': Resting");
 }
 
-void short_press_event() {
+void start_press_event() {
   Serial.print("DEVICE '");
   Serial.print(DEVICE_ID);
-  Serial.println("': Short Press");
+  Serial.println("': Start Press");
   motor_tap();
+}
+
+void release_press_event() {
+  Serial.print("DEVICE '");
+  Serial.print(DEVICE_ID);
+  Serial.println("': Release Press");
 }
 
 void long_press_event() {
@@ -73,13 +88,19 @@ void neighbor_connect_event() {
   Serial.print("DEVICE '");
   Serial.print(DEVICE_ID);
   Serial.println("': Attached to neighbor");
+
+  motor_tap();
 }
 
 void neighbor_detach_event() {
   Serial.print("DEVICE '");
   Serial.print(DEVICE_ID);
   Serial.println("': Detached from neighbor");
+
+  motor_tap();
 }
+
+
 
 
 

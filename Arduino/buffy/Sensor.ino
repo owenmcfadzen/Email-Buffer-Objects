@@ -14,22 +14,23 @@ boolean reed_state = REED_STATE_READY;
 boolean reed_sensor_value = false;
 unsigned long reed_detach_time = 0;
 
-void sensor_init() {
+void sensor_setup() {
   // we don't need to do anything
 }
 
-void update_sensor() {
+void sensor_loop() {
   pb_sensor_value = digitalRead(PUSH_BUTTON_PIN);
 
   if (pb_sensor_value == HIGH && pb_state == PB_STATE_READY) {
     // we are now pressing the button
     pb_state = PB_STATE_PRESSING;
     pb_start_time = millis();
+    start_press_event();
   }
   else if (pb_sensor_value == LOW && pb_state != PB_STATE_READY) {
     // we have now released the button
     if (pb_state == PB_STATE_PRESSING) {
-      short_press_event();
+      release_press_event();
     }
     pb_state = PB_STATE_READY;
     rest_event();
