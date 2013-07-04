@@ -5,8 +5,10 @@ XML xml;
 
 int current_time;
 int previous_time;
-int inbox, special1, special2, special3;
-int newInbox, newSpecial1, newSpecial2, newSpecial3;
+int inbox, special1, special2;
+int mailThreshold = 50;
+char[] ledNumbers = {'0','1','2','3','4','5','6','7','8','9'};
+int newInbox, newSpecial1, newSpecial2;
 int bgcolor;
 boolean checking_email = false;
 
@@ -20,9 +22,9 @@ void setup() {
 
 void draw() {
   
-    while( port.available()>0) { // this is the part to print out what arduino recived
-      print((char) port.read()); // this too 
-    }
+//    while( port.available()>0) { // this is the part to print out what arduino recived
+//      print((char) port.read()); // this too 
+//    }
   background(bgcolor);
 
 
@@ -39,7 +41,6 @@ void draw() {
   String debug_txt = "INBOX: " + inbox + "\n";
   debug_txt += "Special#1: " + special1 + "\n";
   debug_txt += "Special#2: " + special2 + "\n";
-  debug_txt += "Special#3: " + special3 + "\n";
   text(debug_txt, 10, 20);
 
   // Fade down the background colour
@@ -54,38 +55,32 @@ void draw() {
     // this mailbox has a new email
     println("new inbox");
     port.write('A');
-    port.write('z');
+    port.write('K');
     port.write('A');
-    port.write(inbox);
+    int aMail = floor (map(inbox, 0, mailThreshold, 0, 9));
+    port.write(ledNumbers[aMail]);
     bgcolor = 255;
   } else if (newSpecial1 != special1) {
     // this mailbox has a new email
-    special1 = newSpecial1;                  // important to update special1 in  begining of code
+    special1 = newSpecial1;                  
     println("new Special#1");
     port.write('B');
-    port.write('z');
+    port.write('K');
     port.write('B');
-    port.write(special1);
+    int bMail = floor (map(special1, 0, mailThreshold, 0, 9));
+    port.write(ledNumbers[bMail]);
     bgcolor = 255;
   } else if (newSpecial2 != special2) {
     // this mailbox has a new email
     special2 = newSpecial2;
     println("new Special#2");
     port.write('C');
-    port.write('z');
+    port.write('K');
     port.write('C');
-    port.write(special2);
+    int cMail = floor (map(special2, 0, mailThreshold, 0, 9));
+    port.write(ledNumbers[cMail]);
     bgcolor = 255;
-  } else if (newSpecial3 != special3) {
-    special3 = newSpecial3;
-    // this mailbox has a new email
-    println("new Special#3");
-    port.write('D');
-    port.write('z');
-    port.write('D');
-    port.write(special3);
-    bgcolor = 255;
-  }
+  } 
 
 
 }
@@ -113,9 +108,7 @@ void check_mailboxes() {
         newSpecial1 = unread;
       } else if (name.equals("Special#2")) {
         newSpecial2 = unread;
-      } else if (name.equals("Special#3")) {
-        newSpecial3 = unread;
-      }
+      } 
     }
 
     println("finished");
